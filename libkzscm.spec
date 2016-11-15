@@ -50,7 +50,7 @@ install -m644 posix/scheme_posix.h %{buildroot}%{_includedir}/%name/
 %files
 %defattr(644,root,root,755)
 %{_includedir}/%name
-%{_libdir}/libscheme.a
+%{_libdir}/libkzscm.a
 
 
 %clean
