@@ -12,9 +12,9 @@ TEST=-I.
 PROF=
 
 CFLAGS=-O2 $(ENV) $(TEST) $(PROF)
-LDFLAGS=$(PROF) -L.. -lscheme -lpthread -lm
+LDFLAGS=$(PROF) -L.. -lkzscm -lpthread -lm
 
-LIB=libregexp.a
+LIB=libscheme_regexp.a
 OBJ=regexp.o regsub.o regerror.o scheme_regexp.o
 TMP=dtr.tmp
 
@@ -34,5 +34,6 @@ clean:
 	rm -f residue rs.* re.1 rm.h re.h ch.soe ch.ps j badcom fig[012]
 	rm -f ch.sml fig[12].ps $(LIB)
 	rm -rf $(TMP) dtr.*
+	rm -f regexpscheme
 
 .PHONY: clean main

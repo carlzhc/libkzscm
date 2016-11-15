@@ -66,27 +66,27 @@ SRCS =  scheme_alloc.c \
 	scheme_type.c \
 	scheme_vector.c
 
-libscheme.a: $(OBJS) gc/gc.a posix/libposix.a re/libregexp.a
-	$(AR) rv libscheme.a $(OBJS) gc/*.o re/*.o posix/*.o
-	$(RANLIB) libscheme.a
+libkzscm.a: $(OBJS) gc/gc.a posix/libscheme_posix.a re/libscheme_regexp.a
+	$(AR) rv libkzscm.a $(OBJS) gc/*.o re/*.o posix/*.o
+	$(RANLIB) libkzscm.a
 
 gc/gc.a:
 	cd gc; $(MAKE)
 
-posix/libposix.a:
+posix/libscheme_posix.a:
 	cd posix; $(MAKE)
 
-re/libregexp.a:
+re/libscheme_regexp.a:
 	cd re; $(MAKE)
 
-test: libscheme.a main.o 
-	$(CC) $(CFLAGS) -o test main.o libscheme.a $(LIBS)
+test: libkzscm.a main.c 
+	$(CC) $(CFLAGS) -o test main.c libkzscm.a $(LIBS)
 
 depend:
 	makedepend -- $(CFLAGS) -- $(SRCS)
 
 clean:
-	/bin/rm -f $(OBJS) main.o libscheme.a test *~ \
+	/bin/rm -f $(OBJS) main.o libkzscm.a test *~ \
 	libscheme.aux libscheme.dvi libscheme.log tmp1 tmp2 tmp3
 	cd gc; $(MAKE) clean
 	cd re; $(MAKE) clean

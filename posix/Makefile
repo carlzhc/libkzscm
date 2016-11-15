@@ -1,5 +1,5 @@
 INC=-I. -I..
-LIB=-L.. -lscheme -lm -lpthread
+LIB=-L.. -lkzscm -lm -lpthread
 CC=cc
 CFLAGS=-O $(INC)
 
