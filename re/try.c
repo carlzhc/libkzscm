@@ -13,6 +13,7 @@
  */
 #include <stdio.h>
 #include <regexp.h>
+#include "gc.h"
 
 #ifdef ERRAVAIL
 char *progname;
@@ -183,30 +184,30 @@ char **fields;
 	}
 	if (*fields[2] == 'c') {
 		complain("unexpected regcomp success in `%s'", fields[0]);
-		free((char *)r);
+		GC_FREE((char *)r);
 		return;
 	}
 	if (!regexec(r, fields[1])) {
 		if (*fields[2] != 'n')
 			complain("regexec failure in `%s'", fields[0]);
-		free((char *)r);
+		GC_FREE((char *)r);
 		return;
 	}
 	if (*fields[2] == 'n') {
 		complain("unexpected regexec success", "");
-		free((char *)r);
+		GC_FREE((char *)r);
 		return;
 	}
 	errseen = NULL;
 	regsub(r, fields[3], dbuf);
 	if (errseen != NULL) {
 		complain("regsub complaint", "");
-		free((char *)r);
+		GC_FREE((char *)r);
 		return;
 	}
 	if (strcmp(dbuf, fields[4]) != 0)
 		complain("regsub result `%s' wrong", dbuf);
-	free((char *)r);
+	GC_FREE((char *)r);
 }
 
 complain(s1, s2)
