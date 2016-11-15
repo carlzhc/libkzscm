@@ -61,6 +61,10 @@
 #include <fcntl.h>
 #include <stdio.h>
 
+#ifndef S_ENFMT
+#  define S_ENFMT S_ISGID
+#endif
+
 /* variables */
 static Scheme_Object *posix_stat_type;
 static Scheme_Object *posix_dir_type;

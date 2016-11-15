@@ -1,5 +1,12 @@
 *~
 *.a
-*.o
-*.tmp
 *.gz
+*.o
+*.orig
+*.tmp
+gc/base_lib
+gc/gctest
+gc/if_mach
+gc/if_not_there
+gc/threadlibs
+
