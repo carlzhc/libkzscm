@@ -25,7 +25,7 @@
 #include "scheme.h"
 #include <stdio.h>
 
-#define HAS_STANDARD_IOB 1
+/* #define HAS_STANDARD_IOB 1 */
 /* #define HAS_GNU_IOB 1 */
 
 struct Scheme_Indexed_String
