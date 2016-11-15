@@ -15,7 +15,7 @@ CFLAGS=-O2 $(ENV) $(TEST) $(PROF)
 LDFLAGS=$(PROF) -lscheme -lpthread -lm
 
 LIB=libregexp.a
-OBJ=regexp.o regsub.o regerror.o schemeregexp.o
+OBJ=regexp.o regsub.o regerror.o scheme_regexp.o
 TMP=dtr.tmp
 
 
@@ -24,7 +24,7 @@ $(LIB):	$(OBJ)
 
 regexp.o:	regexp.c regexp.h regmagic.h
 regsub.o:	regsub.c regexp.h regmagic.h
-schemeregexp.o: schemeregexp.c    schemeregexp.h
+schemeregexp.o: scheme_regexp.c    scheme_regexp.h
 
 clean:
 	rm -f *.o core mon.out gmon.out timer.t.h copy try timer r.*

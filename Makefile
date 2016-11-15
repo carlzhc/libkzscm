@@ -66,12 +66,18 @@ SRCS =  scheme_alloc.c \
 	scheme_type.c \
 	scheme_vector.c
 
-libscheme.a: $(OBJS) gc/gc.a posix/posix.a re/libregexp.a
+libscheme.a: $(OBJS) gc/gc.a posix/libposix.a re/libregexp.a
 	$(AR) rv libscheme.a $(OBJS) gc/*.o re/*.o posix/*.o
 	$(RANLIB) libscheme.a
 
 gc/gc.a:
 	cd gc; $(MAKE)
+
+posix/libposix.a:
+	cd posix; $(MAKE)
+
+re/libregexp.a:
+	cd re; $(MAKE)
 
 test: libscheme.a main.o 
 	$(CC) $(CFLAGS) -o test main.o libscheme.a $(LIBS)
@@ -83,6 +89,8 @@ clean:
 	/bin/rm -f $(OBJS) main.o libscheme.a test *~ \
 	libscheme.aux libscheme.dvi libscheme.log tmp1 tmp2 tmp3
 	cd gc; $(MAKE) clean
+	cd re; $(MAKE) clean
+	cd posix; $(MAKE) clean
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 

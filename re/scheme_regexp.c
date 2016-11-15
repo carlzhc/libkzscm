@@ -11,7 +11,7 @@
 
 #include <assert.h>
 #include "scheme.h"
-#include "schemeregexp.h"
+#include "scheme_regexp.h"
 #include "regexp.h"
 
 /* variables */
