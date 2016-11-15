@@ -34,6 +34,7 @@ main(int argc, char *argv[])
   global_env = scheme_basic_env ();
   init_posix_file (global_env);
   init_posix_proc (global_env);
+  init_posix_popen (global_env);
   GC_expand_hp (200);
 
   /* load any files given on the command line */

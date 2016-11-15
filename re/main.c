@@ -23,7 +23,7 @@
 */
 
 #include "scheme.h"
-#include "schemeregexp.h"
+#include "scheme_regexp.h"
 
 main(int argc, char *argv[])
 {

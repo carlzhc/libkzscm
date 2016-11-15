@@ -7,9 +7,13 @@ OBJS = posix_file.o posix_proc.o posix_popen.o
 
 libposix.a: $(OBJS)
 	$(AR) rv $@ $^
+
+main: posixscheme
+
 posixscheme: libposix.a main.o
-	$(CC) $(CFLAGS) -o posixscheme libposix.a main.o $(LIB)
+	$(CC) $(CFLAGS) -o $@ main.o $(LIB)
 
 clean:
 	rm -f $(OBJS) main.o libposix.a posixscheme
 
+.PHONY: clean main
