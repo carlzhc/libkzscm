@@ -4,6 +4,9 @@
 *.o
 *.orig
 *.tmp
+test
+posix/posixscheme
+re/regexpscheme
 gc/base_lib
 gc/gctest
 gc/if_mach
