@@ -1,5 +1,5 @@
 /*
-  posix_proc.c
+  scheme_posix_proc.c
   libscheme
   Copyright (c) 1994 Brent Benson
   All rights reserved.
@@ -25,7 +25,7 @@
    (posix-fork) => (or <integer> #f)
 */
 
-#include "posix.h"
+#include "scheme_posix.h"
 
 #include <sys/types.h>
 #include <unistd.h>

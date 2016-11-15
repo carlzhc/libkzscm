@@ -1,5 +1,5 @@
 /*
-  posix_file.c
+  scheme_posix_file.c
 
   Copyright (c) 1994 Brent Benson
   All rights reserved.
@@ -51,7 +51,7 @@
    (port->fildes (port <port>)) => <integer>
 */
 
-#include "posix.h"
+#include "scheme_posix.h"
 #include <string.h>
 #include <limits.h>
 #include <unistd.h>

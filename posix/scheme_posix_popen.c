@@ -4,7 +4,7 @@
 #include <assert.h>
 
 #include "scheme.h"
-#include "posix_popen.h"
+#include "scheme_posix.h"
 
 static Scheme_Object *posix_popen (int argc, Scheme_Object *argv[]);
 static Scheme_Object *posix_pclose (int argc, Scheme_Object *argv[]);
