@@ -153,7 +153,7 @@ if_syntax (Scheme_Object *form, Scheme_Env *env)
   Scheme_Object *test, *thenp, *elsep;
 
   len = scheme_list_length (form);
-  SCHEME_ASSERT (((len == 3) || (len == 4)), "badly formed if statement");
+  SCHEME_ASSERT (((len == 3) || (len == 4)), "badly formed `if' form");
   test = SCHEME_CAR (SCHEME_CDR (form));
   test = scheme_eval (test, env);
   if (test != scheme_false)
@@ -563,7 +563,10 @@ letrec_syntax (Scheme_Object *form, Scheme_Env *env)
   Scheme_Object *vars_last, *vals_last, *pair, *aform;
   int num_int_defs;
 
+  SCHEME_ASSERT ((scheme_list_length(form) >= 3), "badly formed `letrec' form");
   bindings = SCHEME_CAR (SCHEME_CDR (form));
+  SCHEME_ASSERT (SCHEME_PAIRP(bindings), "badly formed `letrec' form");
+
   vars = scheme_map_1 (scheme_car, bindings);
   vals = scheme_map_1 (scheme_cadr, bindings);
 
