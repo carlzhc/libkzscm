@@ -211,7 +211,7 @@ struct Scheme_Input_Port
   void *port_data;
   int (*getc_fun) (struct Scheme_Input_Port *port);
   void (*ungetc_fun) (int ch, struct Scheme_Input_Port *port);
-  long (*char_ready_fun) (struct Scheme_Input_Port *port);
+  size_t (*char_ready_fun) (struct Scheme_Input_Port *port);
   void (*close_fun) (struct Scheme_Input_Port *port);
 };
 typedef struct Scheme_Input_Port Scheme_Input_Port;
@@ -237,7 +237,7 @@ scheme_make_input_port (
   void *data,
   int (*getc_fun) (Scheme_Input_Port*),
   void (*ungetc_fun) (int, Scheme_Input_Port*),
-  long (*char_ready_fun) (Scheme_Input_Port*),
+  size_t (*char_ready_fun) (Scheme_Input_Port*),
   void (*close_fun) (Scheme_Input_Port*)
 );
 Scheme_Output_Port *
