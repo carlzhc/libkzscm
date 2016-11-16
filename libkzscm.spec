@@ -6,12 +6,12 @@
 
 Name:           libkzscm
 Version:        0.6.1
-Release:        20161116git6653db8%{?dist}
+Release:        20161116git7f1a4de%{?dist}
 Summary:        libkzscm is a C library implementing R4RS Scheme
 Group:          Library
 License:        GPL
 URL:            https://github.com/Karl-Z/libkzscm
-Source0:        %name-20161116git6653db8.tar.gz
+Source0:        %name-20161116git7f1a4de.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -42,7 +42,7 @@ make %{?_smp_mflags}
 install -d %{buildroot}%{_libdir}
 install -d %{buildroot}%{_includedir}/%name
 install -d %{buildroot}%{_includedir}/%name
-install -m644 libscheme.a %{buildroot}%{_libdir}/
+install -m644 libkzscm.a %{buildroot}%{_libdir}/
 install -m644 scheme.h %{buildroot}%{_includedir}/%name/
 install -m644 re/scheme_regexp.h %{buildroot}%{_includedir}/%name/
 install -m644 posix/scheme_posix.h %{buildroot}%{_includedir}/%name/
