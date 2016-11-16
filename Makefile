@@ -10,7 +10,7 @@ CC=gcc
 #
 # Optimization and debugging flags go here.
 #
-CFLAGS=-O2
+CFLAGS=-O2 -Werror
 
 #
 # The math library is needed for the numeric functions

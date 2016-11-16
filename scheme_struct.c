@@ -22,6 +22,7 @@
   MODIFICATIONS.
 */
 
+#include <string.h>
 #include "scheme.h"
 
 struct Scheme_Struct_Proc

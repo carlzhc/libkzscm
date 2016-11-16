@@ -3,8 +3,10 @@
 *.gz
 *.o
 *.orig
+*.swp
 *.tmp
 test
+tags
 posix/posixscheme
 re/regexpscheme
 gc/base_lib

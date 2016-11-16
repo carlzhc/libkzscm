@@ -24,6 +24,7 @@
 
 #include "scheme.h"
 #include <stdio.h>
+#include <string.h>
 
 /* #define HAS_STANDARD_IOB 1 */
 /* #define HAS_GNU_IOB 1 */
@@ -141,7 +142,7 @@ scheme_make_input_port (Scheme_Object *subtype,
 			void *data,
 			int (*getc_fun) (Scheme_Input_Port*),
 			void (*ungetc_fun) (int, Scheme_Input_Port*),
-			int (*char_ready_fun) (Scheme_Input_Port*),
+			long (*char_ready_fun) (Scheme_Input_Port*),
 			void (*close_fun) (Scheme_Input_Port*))
 {
   Scheme_Input_Port *ip;
@@ -231,7 +232,7 @@ file_ungetc (int ch, Scheme_Input_Port *port)
   ungetc (ch, (FILE *)port->port_data);
 }
 
-static int
+static long
 file_char_ready (Scheme_Input_Port *port)
 {
   FILE *fp = (FILE *) port->port_data;
@@ -241,7 +242,7 @@ file_char_ready (Scheme_Input_Port *port)
   return (fp->_egptr - fp->_gptr);
 #else
   scheme_warning ("char-ready? always returns #f on this platform");
-  return (scheme_false);
+  return ((long)scheme_false);
 #endif
 }
 
@@ -300,7 +301,7 @@ string_ungetc (int ch, Scheme_Input_Port *port)
     }
 }
 
-static int
+static long
 string_char_ready (Scheme_Input_Port *port)
 {
   Scheme_Indexed_String *is;

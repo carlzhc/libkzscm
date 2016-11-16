@@ -25,6 +25,8 @@
 #include "scheme.h"
 #include <setjmp.h>
 
+
+
 /* globals */
 Scheme_Object *scheme_prim_type;
 Scheme_Object *scheme_closure_type;
@@ -81,13 +83,13 @@ scheme_make_closure (Scheme_Env *env, Scheme_Object *code)
 }
 
 Scheme_Object *
-scheme_make_cont (jmp_buf buf)
+scheme_make_cont (Scheme_Jmpbuf sbuf)
 {
   Scheme_Object *cont;
 
   cont = scheme_alloc_object ();
   SCHEME_TYPE (cont) = scheme_cont_type;
-  SCHEME_PTR_VAL (cont) = buf;
+  SCHEME_PTR_VAL (cont) = sbuf;
   return (cont);
 }
 
@@ -222,7 +224,9 @@ scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands)
     {
       SCHEME_ASSERT ((num_rands == 1),
 		     "apply: wrong number of args to continuation procedure");
-      longjmp ((int *)SCHEME_PTR_VAL(rator), (int)rands[0]);
+      struct Scheme_Jmpbuf *sbuf = SCHEME_PTR_VAL(rator);
+      sbuf[0].obj = rands[0];
+      longjmp (sbuf[0].jmpbuf, 1);
     }
   else if (fun_type == scheme_struct_proc_type)
     {
@@ -419,19 +423,19 @@ for_each (int argc, Scheme_Object *argv[])
 static Scheme_Object *
 call_cc (int argc, Scheme_Object *argv[])
 {
-  jmp_buf buf;
+  Scheme_Jmpbuf sbuf;
   Scheme_Object *ret, *cont;
 
   SCHEME_ASSERT ((argc == 1), "call-with-current-continuation: wrong number of args");
   SCHEME_ASSERT (SCHEME_PROCP (argv[0]), 
 		 "call-with-current-continuation: arg must be a procedure");
-  if (ret = (Scheme_Object *)setjmp (buf))
+  if (setjmp (sbuf[0].jmpbuf))
     {
-      return (ret);
+      return (sbuf[0].obj);
     }
   else
     {
-      cont = scheme_make_cont (buf);
+      cont = scheme_make_cont (sbuf);
       return (scheme_apply_to_list (argv[0], scheme_make_pair (cont, scheme_null)));
     }
 }

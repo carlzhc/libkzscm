@@ -117,6 +117,13 @@ typedef struct Scheme_Object *
 typedef struct Scheme_Object *
 (Scheme_Syntax) (struct Scheme_Object *form, struct Scheme_Env *env);
 
+struct Scheme_Jmpbuf
+{
+	jmp_buf jmpbuf;
+	Scheme_Object *obj; /* scheme return object from longjmp */
+};
+typedef struct Scheme_Jmpbuf Scheme_Jmpbuf[1];
+
 /* error handling */
 extern jmp_buf scheme_error_buf;
 void scheme_signal_error (char *msg, ...);
@@ -184,7 +191,7 @@ void *scheme_lookup_in_table (Scheme_Hash_Table *table, char *key);
 /* constructors */
 Scheme_Object *scheme_make_prim (Scheme_Prim *prim);
 Scheme_Object *scheme_make_closure (Scheme_Env *env, Scheme_Object *code);
-Scheme_Object *scheme_make_cont (jmp_buf buf);
+Scheme_Object *scheme_make_cont (Scheme_Jmpbuf sbuf);
 Scheme_Object *scheme_make_type (char *name);
 Scheme_Object *scheme_make_pair (Scheme_Object *car, Scheme_Object *cdr);
 Scheme_Object *scheme_make_string (char *chars);
@@ -204,7 +211,7 @@ struct Scheme_Input_Port
   void *port_data;
   int (*getc_fun) (struct Scheme_Input_Port *port);
   void (*ungetc_fun) (int ch, struct Scheme_Input_Port *port);
-  int (*char_ready_fun) (struct Scheme_Input_Port *port);
+  long (*char_ready_fun) (struct Scheme_Input_Port *port);
   void (*close_fun) (struct Scheme_Input_Port *port);
 };
 typedef struct Scheme_Input_Port Scheme_Input_Port;
@@ -230,7 +237,7 @@ scheme_make_input_port (
   void *data,
   int (*getc_fun) (Scheme_Input_Port*),
   void (*ungetc_fun) (int, Scheme_Input_Port*),
-  int (*char_ready_fun) (Scheme_Input_Port*),
+  long (*char_ready_fun) (Scheme_Input_Port*),
   void (*close_fun) (Scheme_Input_Port*)
 );
 Scheme_Output_Port *
