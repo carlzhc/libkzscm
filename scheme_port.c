@@ -25,6 +25,7 @@
 #include "scheme.h"
 #include <stdio.h>
 #include <string.h>
+#include <sys/select.h>
 
 /* #define HAS_STANDARD_IOB 1 */
 /* #define HAS_GNU_IOB 1 */
@@ -241,8 +242,23 @@ file_char_ready (Scheme_Input_Port *port)
 #elif HAS_GNU_IOB
   return (fp->_egptr - fp->_gptr);
 #else
-  scheme_warning ("char-ready? always returns #f on this platform");
-  return ((size_t)scheme_false);
+
+  int fd = fileno(fp);
+  SCHEME_ASSERT (fd >= 0, "not a vaild input port");
+
+  struct timeval tv = { .tv_sec = 0, .tv_usec = 0 };
+
+  fd_set fds;
+  FD_ZERO(&fds);
+  FD_SET(fd, &fds);
+
+  int ret = select(fd+1, &fds, NULL, NULL, &tv);
+  SCHEME_ASSERT (ret != -1, "`select' system call failed");
+  return ret;
+
+  /* scheme_warning ("char-ready? always returns #f on this platform");
+     return ((size_t)scheme_false);
+  */
 #endif
 }
 
