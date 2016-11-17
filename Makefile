@@ -10,13 +10,13 @@ CC=gcc
 #
 # Optimization and debugging flags go here.
 #
-CFLAGS=-O2 -Werror
+CFLAGS=-O2 -Werror -pthread
 
 #
 # The math library is needed for the numeric functions
 # in scheme_number.c.
 #
-LIBS=-lm -lpthread
+LIBS=-lm -pthread
 
 #
 # If your system needs ranlib, put it here.  Otherwise,
@@ -71,7 +71,7 @@ libkzscm.a: $(OBJS) gc/gc.a posix/libscheme_posix.a re/libscheme_regexp.a
 	$(RANLIB) libkzscm.a
 
 gc/gc.a:
-	cd gc; $(MAKE)
+	cd gc; ./configure && $(MAKE)
 
 posix/libscheme_posix.a:
 	cd posix; $(MAKE)
