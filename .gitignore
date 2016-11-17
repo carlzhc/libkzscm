@@ -5,6 +5,7 @@
 *.orig
 *.swp
 *.tmp
+tmp?
 test
 tags
 posix/posixscheme

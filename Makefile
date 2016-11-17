@@ -70,7 +70,7 @@ libkzscm.a: $(OBJS) gc/.libs/libgc.a posix/libscheme_posix.a re/libscheme_regexp
 	$(AR) rv libkzscm.a $(OBJS) gc/*.o re/*.o posix/*.o
 	$(RANLIB) libkzscm.a
 
-gc/gc.a:
+gc/.libs/libgc.a:
 	cd gc; ./configure && $(MAKE)
 
 posix/libscheme_posix.a:
