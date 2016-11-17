@@ -207,7 +207,11 @@ scheme_close_input_port (Scheme_Object *port)
   Scheme_Input_Port *ip;
 
   ip = (Scheme_Input_Port *) SCHEME_PTR_VAL (port);
-  (ip->close_fun) (ip);
+  if (ip->port_data != NULL)
+    {
+      (ip->close_fun) (ip);
+      ip->port_data = NULL;
+    }
 }
 
 void
@@ -216,7 +220,11 @@ scheme_close_output_port (Scheme_Object *port)
   Scheme_Output_Port *op;
 
   op = (Scheme_Output_Port *) SCHEME_PTR_VAL (port);
-  (op->close_fun) (op);
+  if (op->port_data != NULL)
+    {
+      (op->close_fun) (op);
+      op->port_data = NULL;
+    }
 }
 
 /* file input ports */
@@ -552,7 +560,7 @@ open_input_file (int argc, Scheme_Object *argv[])
   fp = fopen (SCHEME_STR_VAL(argv[0]), "r");
   if (!fp)
     {
-      scheme_signal_error ("Cannot open input file %s", SCHEME_STR_VAL(argv[0]));
+      scheme_signal_error ("cannot open input file %s", SCHEME_STR_VAL(argv[0]));
     }
   return (scheme_make_file_input_port (fp));
 }
