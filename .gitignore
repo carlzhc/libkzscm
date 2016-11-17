@@ -14,4 +14,15 @@ gc/gctest
 gc/if_mach
 gc/if_not_there
 gc/threadlibs
+gc/*.lo
+gc/Makefile
+gc/.deps/
+gc/.libs/
+gc/config.log
+gc/config.status
+gc/doc/Makefile
+gc/include/Makefile
+gc/libgc.la
+gc/libtool
+
 

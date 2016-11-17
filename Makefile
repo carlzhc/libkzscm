@@ -66,7 +66,7 @@ SRCS =  scheme_alloc.c \
 	scheme_type.c \
 	scheme_vector.c
 
-libkzscm.a: $(OBJS) gc/gc.a posix/libscheme_posix.a re/libscheme_regexp.a
+libkzscm.a: $(OBJS) gc/.libs/libgc.a posix/libscheme_posix.a re/libscheme_regexp.a
 	$(AR) rv libkzscm.a $(OBJS) gc/*.o re/*.o posix/*.o
 	$(RANLIB) libkzscm.a
 
