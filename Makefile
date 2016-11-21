@@ -80,7 +80,7 @@ re/libscheme_regexp.a:
 	cd re; $(MAKE)
 
 test: libkzscm.a main.c 
-	$(CC) $(CFLAGS) -o test main.c libkzscm.a $(LIBS)
+	$(CC) $(filter-out -O%,$(CFLAGS)) -O0 -g -o test main.c libkzscm.a $(LIBS)
 
 depend:
 	makedepend -- $(CFLAGS) -- $(SRCS)
