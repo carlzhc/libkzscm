@@ -11,7 +11,6 @@
  * like "timer 1 50 1".
  */
 #include <stdio.h>
-#include "gc.h"
 
 struct try {
 	char *re, *str, *ans, *src, *dst;
@@ -122,22 +121,18 @@ int ncomp, nexec, nsub;
 	}
 	if (*fields.ans == 'c') {
 		complain("unexpected regcomp success in `%s'", fields.re);
-		GC_FREE((char *)r);
 		return;
 	}
 	for (i = ncomp-1; i > 0; i--) {
-		GC_FREE((char *)r);
 		r = regcomp(fields.re);
 	}
 	if (!regexec(r, fields.str)) {
 		if (*fields.ans != 'n')
 			complain("regexec failure in `%s'", "");
-		GC_FREE((char *)r);
 		return;
 	}
 	if (*fields.ans == 'n') {
 		complain("unexpected regexec success", "");
-		GC_FREE((char *)r);
 		return;
 	}
 	for (i = nexec-1; i > 0; i--)
@@ -147,12 +142,10 @@ int ncomp, nexec, nsub;
 		regsub(r, fields.src, dbuf);
 	if (errseen != NULL) {	
 		complain("regsub complaint", "");
-		GC_FREE((char *)r);
 		return;
 	}
 	if (strcmp(dbuf, fields.dst) != 0)
 		complain("regsub result `%s' wrong", dbuf);
-	GC_FREE((char *)r);
 }
 
 complain(s1, s2)

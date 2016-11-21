@@ -14,7 +14,7 @@ PROF=
 CFLAGS=-O2 $(ENV) $(TEST) $(PROF)
 LDFLAGS=$(PROF) -L.. -lkzscm -lpthread -lm
 
-LIB=libscheme_regexp.a
+LIB=libkzscm_regexp.a
 OBJ=regexp.o regsub.o regerror.o scheme_regexp.o
 TMP=dtr.tmp
 

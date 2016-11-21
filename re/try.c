@@ -12,6 +12,8 @@
  * Field separator is tab.
  */
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <regexp.h>
 #include "gc.h"
 
@@ -70,16 +72,6 @@ char *argv[];
 	exit(status);
 }
 
-void
-regerror(s)
-char *s;
-{
-	if (errreport)
-		errseen = s;
-	else
-		error(s, "");
-}
-
 #ifndef ERRAVAIL
 error(s1, s2)
 char *s1;
@@ -103,7 +95,6 @@ multiple()
 	char *scan;
 	int i;
 	regexp *r;
-	extern char *strchr();
 
 	errreport = 1;
 	lineno = 0;

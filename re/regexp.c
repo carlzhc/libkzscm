@@ -6,7 +6,7 @@
 #include <string.h>
 #include <regexp.h>
 #include "regmagic.h"
-#include "gc.h"
+#include "scheme.h"
 
 /*
  * The "internal use only" fields in regexp.h are present to pass info from
@@ -186,7 +186,7 @@ const char *exp;
 		FAIL("regexp too big");
 
 	/* Allocate space. */
-	r = (regexp *)GC_MALLOC(sizeof(regexp) + (size_t)co.regsize);
+	r = (regexp *)scheme_malloc(sizeof(regexp) + (size_t)co.regsize);
 	if (r == NULL)
 		FAIL("out of space");
 

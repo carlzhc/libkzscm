@@ -1,5 +1,5 @@
 #
-# Makefile for libscheme
+# Makefile for libkzscm
 #
 
 #
@@ -66,17 +66,17 @@ SRCS =  scheme_alloc.c \
 	scheme_type.c \
 	scheme_vector.c
 
-libkzscm.a: $(OBJS) gc/.libs/libgc.a posix/libscheme_posix.a re/libscheme_regexp.a
+libkzscm.a: $(OBJS) gc/.libs/libgc.a posix/libkzscm_posix.a re/libkzscm_regexp.a
 	$(AR) rv libkzscm.a $(OBJS) gc/*.o re/*.o posix/*.o
 	$(RANLIB) libkzscm.a
 
 gc/.libs/libgc.a:
 	cd gc; ./configure && $(MAKE)
 
-posix/libscheme_posix.a:
+posix/libkzscm_posix.a:
 	cd posix; $(MAKE)
 
-re/libscheme_regexp.a:
+re/libkzscm_regexp.a:
 	cd re; $(MAKE)
 
 test: libkzscm.a main.c 
