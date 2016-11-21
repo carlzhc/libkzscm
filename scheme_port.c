@@ -143,7 +143,7 @@ scheme_make_input_port (Scheme_Object *subtype,
 			void *data,
 			int (*getc_fun) (Scheme_Input_Port*),
 			void (*ungetc_fun) (int, Scheme_Input_Port*),
-			size_t (*char_ready_fun) (Scheme_Input_Port*),
+			int (*char_ready_fun) (Scheme_Input_Port*),
 			void (*close_fun) (Scheme_Input_Port*))
 {
   Scheme_Input_Port *ip;
@@ -241,7 +241,7 @@ file_ungetc (int ch, Scheme_Input_Port *port)
   ungetc (ch, (FILE *)port->port_data);
 }
 
-static size_t
+static int
 file_char_ready (Scheme_Input_Port *port)
 {
   FILE *fp = (FILE *) port->port_data;
@@ -325,7 +325,7 @@ string_ungetc (int ch, Scheme_Input_Port *port)
     }
 }
 
-static size_t
+static int
 string_char_ready (Scheme_Input_Port *port)
 {
   Scheme_Indexed_String *is;
