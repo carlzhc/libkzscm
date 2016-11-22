@@ -175,11 +175,13 @@ Scheme_Object *scheme_apply_to_list (Scheme_Object *rator, Scheme_Object *rands)
 Scheme_Object *scheme_apply_struct_proc (Scheme_Object *rator, Scheme_Object *rands);
 Scheme_Object *scheme_alloc_object (void);
 void *scheme_malloc (size_t size);
+void *scheme_realloc (void *old, size_t size);
 void *scheme_calloc (size_t num, size_t size);
 char *scheme_strdup (char *str);
 
 /* garbage collected heap interface */
 extern void *GC_malloc (size_t size_in_bytes);
+extern void *GC_realloc (void *old, size_t size_in_bytes);
 extern int GC_expand_hp (int num_4k_blocks);
 
 /* hash table interface */

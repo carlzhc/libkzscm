@@ -27,8 +27,10 @@
 
 #ifdef NO_GC
 #define MALLOC malloc
+#define REALLOC realloc
 #else
 #define MALLOC GC_malloc
+#define REALLOC GC_realloc
 #endif
 
 Scheme_Object *
@@ -61,6 +63,14 @@ scheme_calloc (size_t num, size_t size)
 #endif
   SCHEME_ASSERT ((space != 0), "memory allocation failure");
   return (space);
+}
+
+void *
+scheme_realloc (void * ptr, size_t size)
+{
+  ptr = REALLOC (ptr, size);
+  SCHEME_ASSERT ((ptr != 0), "memory re-allocation failure");
+  return (ptr);
 }
 
 char *

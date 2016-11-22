@@ -129,18 +129,22 @@ scheme_regexp_replace (int argc, Scheme_Object *argv[])
 
 	if (regexec (re, target))
 	  {
-	    /* match found */
-	    char buf[BUFSIZ];
-	    int prelen=re->startp[0] - target;
-	    strncpy (buf, target, prelen);
+	    int prelen = re->startp[0] - target;
+	    int suflen = strlen (re->endp[0]);
+	    char *rep = regsub (re, replacement);
+	    int replen = strlen(rep);
 
-	    regsub (re, SCHEME_STR_VAL (argv[2]), buf+prelen);
-	    strcat (buf,re->endp[0]);
-	    return scheme_make_string (buf);
+	    Scheme_Object *so_result = scheme_alloc_string (prelen + replen + suflen, '\0');
+	    assert (so_result);
+
+	    char *buf = SCHEME_STR_VAL (so_result);
+	    strncpy (buf, target, prelen);
+	    strncpy (buf+prelen, rep, replen);
+	    strncpy (buf+prelen+replen, re->endp[0], suflen);
+	    return so_result;
 	  }
 	else
 	  {
 	    return argv[1];
 	  }
-
 }	
