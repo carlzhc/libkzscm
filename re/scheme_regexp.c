@@ -19,9 +19,9 @@
 static Scheme_Object *scheme_regexp_type;
 
 /* functions */
-Scheme_Object *scheme_regexpp (int argc, Scheme_Object *argv[]);
+Scheme_Object *scheme_regexp_p (int argc, Scheme_Object *argv[]);
 Scheme_Object *scheme_regexp (int argc, Scheme_Object *argv[]);
-Scheme_Object *scheme_regexp_matchp (int argc, Scheme_Object *argv[]);
+Scheme_Object *scheme_regexp_match_p (int argc, Scheme_Object *argv[]);
 Scheme_Object *scheme_regexp_replace (int argc, Scheme_Object *argv[]);
 
 #define SCHEME_REGEXPP(obj) (SCHEME_TYPE(obj) == scheme_regexp_type)
@@ -33,16 +33,16 @@ scheme_init_regexp (Scheme_Env *env)
 	scheme_regexp_type = scheme_make_type ("<regexp>");
 
 	/* functions */
-	scheme_add_global ("regexp?", scheme_make_prim (scheme_regexpp), env);
+	scheme_add_global ("regexp?", scheme_make_prim (scheme_regexp_p), env);
 	scheme_add_global ("regexp", scheme_make_prim (scheme_regexp), env);
-	scheme_add_global ("regexp-match?", scheme_make_prim (scheme_regexp_matchp), env);
+	scheme_add_global ("regexp-match?", scheme_make_prim (scheme_regexp_match_p), env);
 	scheme_add_global ("regexp-replace", scheme_make_prim (scheme_regexp_replace), env);
 }
 
 
 /* new primitives */
 Scheme_Object *
-scheme_regexpp (int argc, Scheme_Object *argv[])
+scheme_regexp_p (int argc, Scheme_Object *argv[])
 {
 	SCHEME_ASSERT ((argc == 1), "regexp?: wrong number of arguments");
 	if (SCHEME_REGEXPP(argv[0]))
@@ -72,7 +72,7 @@ scheme_regexp (int argc, Scheme_Object *argv[])
 
 
 Scheme_Object *
-scheme_regexp_matchp (int argc, Scheme_Object *argv[])
+scheme_regexp_match_p (int argc, Scheme_Object *argv[])
 {
 	SCHEME_ASSERT ((argc == 2), "regexp-match?: wrong number of arguments");
 	SCHEME_ASSERT (SCHEME_STRINGP (argv[0]) || SCHEME_REGEXPP (argv[0]), "regexp-match?: first arg must be a string or regexp");
