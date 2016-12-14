@@ -7,6 +7,9 @@
    (regexp-compile (re <string>)) => regexp?
    (regexp-match? (re <string>) (target <string>)) => #t
    (regexp-match (re <string>) (target <string>)) => int
+   (regexp-replace (re <string>) (target <string) (replacement <string>)) => string?
+   (regexp-replace* (re <string>) (target <string>) (replacement <string>)) => string?
+   (regexp-replace-range (re <string>) (target <string>) (replacement <string>) (begin <number>) (end <number>)) => string?
 */
 
 #include <assert.h>
@@ -24,7 +27,7 @@ Scheme_Object *scheme_regexp (int argc, Scheme_Object *argv[]);
 Scheme_Object *scheme_regexp_match_p (int argc, Scheme_Object *argv[]);
 Scheme_Object *scheme_regexp_replace (int argc, Scheme_Object *argv[]);
 Scheme_Object *scheme_regexp_replace_star (int argc, Scheme_Object *argv[]);
-Scheme_Object *scheme_regexp_replace_first (int argc, Scheme_Object *argv[]);
+Scheme_Object *scheme_regexp_replace_range (int argc, Scheme_Object *argv[]);
 
 #define SCHEME_REGEXPP(obj) (SCHEME_TYPE(obj) == scheme_regexp_type)
 
@@ -40,7 +43,7 @@ scheme_init_regexp (Scheme_Env *env)
   scheme_add_global ("regexp-match?", scheme_make_prim (scheme_regexp_match_p), env);
   scheme_add_global ("regexp-replace", scheme_make_prim (scheme_regexp_replace), env);
   scheme_add_global ("regexp-replace*", scheme_make_prim (scheme_regexp_replace_star), env);
-  scheme_add_global ("regexp-replace-first", scheme_make_prim (scheme_regexp_replace_first), env);
+  scheme_add_global ("regexp-replace-range", scheme_make_prim (scheme_regexp_replace_range), env);
 }
 
 
@@ -106,40 +109,45 @@ scheme_regexp_match_p (int argc, Scheme_Object *argv[])
 Scheme_Object *
 scheme_regexp_replace (int argc, Scheme_Object *argv[])
 {
-  Scheme_Object *newargv[argc + 1];
+  Scheme_Object *newargv[argc + 2];
   int i = 0;
   for (i = 0; i< argc; i++)
     {
       newargv[i] = argv[i];
     }
   newargv[i] = scheme_make_integer (1);
-  return scheme_regexp_replace_first (argc+1, newargv);
+  newargv[i+1] = scheme_make_integer (1);
+  return scheme_regexp_replace_range (argc+2, newargv);
 }
 
 Scheme_Object *
 scheme_regexp_replace_star (int argc, Scheme_Object *argv[])
 {
-  Scheme_Object *newargv[argc + 1];
+  Scheme_Object *newargv[argc + 2];
   int i = 0;
   for (i = 0; i< argc; i++)
     {
       newargv[i] = argv[i];
     }
-  newargv[i] = scheme_true;
-  return scheme_regexp_replace_first (argc+1, newargv);
+
+  newargv[i] = scheme_make_integer (1);
+  newargv[i+1] = scheme_make_integer (-1);
+  return scheme_regexp_replace_range (argc+2, newargv);
 }
 
-/* do subsituation n times
-   n >= 0 first n occurences to be replaced
-   n < 0 all occurence to be replaced */
+
+/* do subsituation for selected matches
+   the last 2 parameter in argv[] are from first match to last match includsively.
+   if last parameter is -1, means the last match of all matches
+*/
 Scheme_Object *
-scheme_regexp_replace_first (int argc, Scheme_Object *argv[])
+scheme_regexp_replace_range (int argc, Scheme_Object *argv[])
 {
-  SCHEME_ASSERT ((argc == 4), "regexp-replace: wrong number of arguments");
-  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]) || SCHEME_REGEXPP (argv[0]), "regexp-replace: first arg must be a string or regexp");
-  SCHEME_ASSERT (SCHEME_STRINGP (argv[1]), "regexp-replace: second arg must be a string");
-  SCHEME_ASSERT (SCHEME_STRINGP (argv[2]), "regexp-replace: third arg must be a string");
-  SCHEME_ASSERT (SCHEME_INTP (argv[3]) || SCHEME_BOOLP (argv[3]), "regexp-replace: forth arg must be a number or #t");
+  SCHEME_ASSERT ((argc == 5), "regexp-replace-range: wrong number of arguments");
+  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]) || SCHEME_REGEXPP (argv[0]), "regexp-replace-range: first arg must be a string or regexp");
+  SCHEME_ASSERT (SCHEME_STRINGP (argv[1]), "regexp-replace-range: second arg must be a string");
+  SCHEME_ASSERT (SCHEME_STRINGP (argv[2]), "regexp-replace-range: third arg must be a string");
+  SCHEME_ASSERT (SCHEME_INTP (argv[3]) && SCHEME_INTP (argv[4]), "regexp-replace-range: forth and fifth arg must be numbers");
 
   Scheme_Object *so_re;
 
@@ -160,45 +168,44 @@ scheme_regexp_replace_first (int argc, Scheme_Object *argv[])
   assert (target);
   assert (replacement);
 
-  unsigned int n;
-  if (SCHEME_INTP (argv[3]))
-    n = SCHEME_INT_VAL (argv[3]);
-  else if (argv[3] == scheme_true)
-    n = -1;
-  else
-    n = 0;
-  
+  unsigned int m,n;
+  m = SCHEME_INT_VAL (argv[3]);
+  n = SCHEME_INT_VAL (argv[4]);
+  SCHEME_ASSERT (m >0 && n >0 && m <=n, "regexp-releace-range: range invalided");
+
   char result[BUFSIZ];
   char *buf = result;
   Scheme_Object *so_result;
 
-  if (n > 0)
+  char *tgt = target;
+  int i;
+  for (i = 1; i <= n; i++)
     {
-      char *tgt = target;
-      int i;
-      for (i = 0; i < n; i++)
+      if (regexec (re, tgt))
 	{
-	  if (regexec (re, tgt))
+	  if (i < m)
+	    {
+	      int len = re->endp[0] - tgt;
+	      strncpy (buf, tgt, len);
+	      buf = buf + len;
+	      tgt = re->endp[0];
+	    }
+	  else
 	    {
 	      char *rep = regsub (re, replacement);
 	      int replen = strlen(rep);
+	      int prelen = re->startp[0] - tgt;
 
-	      if ( re->startp[0] != NULL )
-		{
-		  int prelen = re->startp[0] - tgt;
-		  strncpy (buf, tgt, prelen);
-		  strncpy (buf+prelen, rep, replen);
-		  buf = buf + prelen + replen;
-		  tgt = re->endp[0];
-		}
-	      else
-		break;
+	      strncpy (buf, tgt, prelen);
+	      strncpy (buf+prelen, rep, replen);
+	      buf = buf + prelen + replen;
+	      tgt = re->endp[0];
 	    }
-	  else
-	    break;
 	}
-      strncpy (buf, tgt, strlen (tgt));
+      else
+	break;
     }
+  strncpy (buf, tgt, strlen (tgt));
 
   so_result = scheme_alloc_string (strlen (result) + 1, '\0');
   strcpy (SCHEME_STR_VAL (so_result), result);
