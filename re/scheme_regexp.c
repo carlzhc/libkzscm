@@ -173,7 +173,7 @@ scheme_regexp_replace_range (int argc, Scheme_Object *argv[])
   n = SCHEME_INT_VAL (argv[4]);
   SCHEME_ASSERT (m >0 && n >0 && m <=n, "regexp-releace-range: range invalided");
 
-  char result[BUFSIZ];
+  char result[BUFSIZ+1];
   char *buf = result;
   Scheme_Object *so_result;
 
@@ -186,6 +186,7 @@ scheme_regexp_replace_range (int argc, Scheme_Object *argv[])
 	  if (i < m)
 	    {
 	      int len = re->endp[0] - tgt;
+	      SCHEME_ASSERT (buf + len < result + BUFSIZ, "regexp-releace-range: buffer overflow");
 	      strncpy (buf, tgt, len);
 	      buf = buf + len;
 	      tgt = re->endp[0];
@@ -196,16 +197,23 @@ scheme_regexp_replace_range (int argc, Scheme_Object *argv[])
 	      int replen = strlen(rep);
 	      int prelen = re->startp[0] - tgt;
 
+	      SCHEME_ASSERT (buf + prelen < result + BUFSIZ, "regexp-releace-range: buffer overflow");
 	      strncpy (buf, tgt, prelen);
-	      strncpy (buf+prelen, rep, replen);
-	      buf = buf + prelen + replen;
+
+	      buf += prelen;
+	      SCHEME_ASSERT (buf + replen < result + BUFSIZ, "regexp-releace-range: buffer overflow");
+	      strncpy (buf, rep, replen);
+	      buf += replen;
 	      tgt = re->endp[0];
 	    }
 	}
       else
 	break;
     }
-  strncpy (buf, tgt, strlen (tgt));
+
+  int postlen = strlen (tgt);
+  SCHEME_ASSERT (buf + postlen < result + BUFSIZ, "regexp-releace-range: buffer overflow");
+  strcpy (buf, tgt);
 
   so_result = scheme_alloc_string (strlen (result) + 1, '\0');
   strcpy (SCHEME_STR_VAL (so_result), result);
