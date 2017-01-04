@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define MAX_STRING_SIZE 1024
+#define MAX_STRING_SIZE BUFSIZ
 #define MAX_NUMBER_SIZE 64
 #define MAX_SYMBOL_SIZE 255
 
@@ -203,7 +203,7 @@ read_list (Scheme_Object *port)
 static Scheme_Object *
 read_string (Scheme_Object *port)
 {
-  char ch, buf[MAX_STRING_SIZE];
+  char ch, buf[MAX_STRING_SIZE+1];
   int i;
 
   i = 0;
