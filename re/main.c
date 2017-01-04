@@ -34,6 +34,7 @@ main(int argc, char *argv[])
 
   global_env = scheme_basic_env ();
   scheme_init_regexp (global_env);
+  scheme_default_handler ();
   GC_expand_hp (200);
 
   /* load any files given on the command line */
